@@ -10,4 +10,8 @@ class TestsController < Simpler::Controller
 
   def create; end
 
+  def show
+    render plain: params
+  end
+
 end

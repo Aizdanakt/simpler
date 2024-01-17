@@ -28,7 +28,9 @@ module Simpler
       route_point = route_point.split('#')
       controller = controller_from_string(route_point[0])
       action = route_point[1]
-      route = Route.new(method, path, controller, action)
+
+      path_pattern = path.gsub(/:([\w_]+)/, '(?<\1>\w+)')
+      route = Route.new(method, path_pattern, controller, action)
 
       @routes.push(route)
     end

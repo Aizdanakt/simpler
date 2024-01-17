@@ -15,6 +15,13 @@ module Simpler
         @method == method && path.match(@path)
       end
 
+      private
+
+      def params?(path)
+        match = path.match(@path)
+        match ? match.named_captures.transform_keys(&:to_sym) : {}
+      end
+
     end
   end
 end
