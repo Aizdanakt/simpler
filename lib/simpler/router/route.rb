@@ -9,17 +9,25 @@ module Simpler
         @path = path
         @controller = controller
         @action = action
+        @path_pattern = path_pattern(path)
       end
 
-      def match?(method, path)
-        @method == method && path.match(@path)
+      def match?(env, path)
+        match = path.match(@path_pattern)
+        return false unless match
+
+        params(env, match)
       end
 
       private
 
-      def params?(path)
-        match = path.match(@path)
-        match ? match.named_captures.transform_keys(&:to_sym) : {}
+      def params(env, match)
+        @params = match.named_captures.transform_keys(&:to_sym)
+        env['simpler.params'] = @params
+      end
+
+      def path_pattern(path)
+        Regexp.new("^#{path.gsub(/:([\w_]+)/, '(?<\1>[^\/]+)')}$")
       end
 
     end
