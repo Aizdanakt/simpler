@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'singleton'
 require 'sequel'
@@ -28,13 +30,18 @@ module Simpler
 
     def call(env)
       route = @router.route_for(env)
+      return invalid_route unless route
+
       controller = route.controller.new(env)
       action = route.action
-
       make_response(controller, action)
     end
 
     private
+
+    def invalid_route
+      [404, { 'Content-Type' => 'text/plain' }, ["Route not found\n"]]
+    end
 
     def require_app
       Dir["#{Simpler.root}/app/**/*.rb"].each { |file| require file }

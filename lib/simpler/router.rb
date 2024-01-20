@@ -16,10 +16,10 @@ module Simpler
     end
 
     def route_for(env)
-      method = env['REQUEST_METHOD'].downcase.to_sym
+      # method = env['REQUEST_METHOD'].downcase.to_sym
       path = env['PATH_INFO']
 
-      @routes.find { |route| route.match?(method, path) }
+      @routes.find { |route| route.match?(env, path) }
     end
 
     private
@@ -28,8 +28,8 @@ module Simpler
       route_point = route_point.split('#')
       controller = controller_from_string(route_point[0])
       action = route_point[1]
-      route = Route.new(method, path, controller, action)
 
+      route = Route.new(method, path, controller, action)
       @routes.push(route)
     end
 
